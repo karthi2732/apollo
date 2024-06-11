@@ -1,0 +1,11 @@
+[
+    {
+        "searchId": "bharat-electronics-ltd",
+        "symbol": "BEL",
+        "stockExchange": "NSE",
+        "sellBoundary": 253.11,
+        "buyBoundary": 300.09,
+        "sellBoundaryNotificationEnabled": false,
+        "buyBoundaryNotificationEnabled": true
+    }
+]
