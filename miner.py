@@ -1,7 +1,8 @@
 
 from gapis.apis import get_all_stks_data, get_stk_chart_data
-from db.odin import open_connection, close_connection, upsert_data, get_stk_cnt, get_search_id_from_db, get_stk_details, update_tradability
+from db.odin import *
 import time, conf.config, math, concurrent.futures
+from conf.util import *
 
 
 GLOBAL_THREAD_POOL  = None
@@ -55,8 +56,6 @@ def analyse_all_db_stks(analyse_func, analysis_output, page_number = 0, page_siz
         
         offset = page_number*page_size
         limit = offset+page_size
-        iteration_threshold-= 1
-        page_number+= 1
     
         print(f'Offset: {offset} LimitTill: {limit} ThresholdCount: {iteration_threshold}')
 
@@ -64,6 +63,9 @@ def analyse_all_db_stks(analyse_func, analysis_output, page_number = 0, page_siz
         stk_data_list = get_stk_details(ids)
 
         analyse_func(stk_data_list, analysis_output)
+
+        iteration_threshold-= 1
+        page_number+= 1
 
 
 ######################### EXTRACT LIVE DATA ################################
@@ -76,17 +78,23 @@ def populate_changers_dict_from_list_stks(records_list, changers_list):
         stk_change_data['open_price'] = record.get('livePriceDto').get('open')
         stk_change_data['day_change'] = record.get('livePriceDto').get('dayChange')
         stk_change_data['day_change_perc'] = record.get('livePriceDto').get('dayChangePerc')
-        changers_list.append(stk_change_data)
+        if(is_stk_tradable(record.get('searchId'))):
+            changers_list.append(stk_change_data)
 
 
 ######################### ITERATE STKS FROM DB #############################
 
 def list_day_changers():
+    open_connection()
     changers = []
-    analyse_all_gstks(analyse_func=populate_changers_dict_from_list_stks, analysis_output=changers)
+    analyse_all_gstks(analyse_func=populate_changers_dict_from_list_stks, analysis_output=changers, iteration_threshold=3)
     
-    # for changer in changers:
-    #     print(changer)
+    sort_dict(changers, 'day_change_perc', 0, len(changers)-1)
+    
+    print()
+    for changer in changers:
+        print(changer)
+    close_connection()
 
 
 ######################### POPULATE STKS DATA IN DB #########################
@@ -152,7 +160,7 @@ def analyse_and_update_trability(record_list, analysis_output):
 
 def update_stk_tradability():
     open_connection()
-    analyse_all_db_stks(analyse_func=analyse_and_update_trability, analysis_output=None, page_size=5, iteration_threshold=3)
+    analyse_all_db_stks(analyse_func=analyse_and_update_trability, analysis_output=None)
     shutdown_thread_pool()
     close_connection()
 
