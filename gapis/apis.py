@@ -2,7 +2,8 @@ from urllib.parse import quote
 import requests, datetime, time, conf
 import conf.config, conf.util
 
-####################################################################
+
+################ EXECUTES API CALLS WITH RETRIES ############################
 
 def call(url, method, headers, payload, retry_count, raise_exception):
     
@@ -29,35 +30,35 @@ def call(url, method, headers, payload, retry_count, raise_exception):
 
     return api_response.json()
 
-####################################################################
+######################## RETURNS HEADER DICT ###############################
 
 def get_auth_headers():
     return { 'Authorization': f'Bearer {conf.config.G_PROPERTIES.get("ubt")}', 'x-user-campaign': f'Bearer {conf.config.G_PROPERTIES.get("uct")}' }
 
-####################################################################
+######################## RETURNS LIVEPRICE DICT ############################
 
-def get_live_price(stock_exchange, stock_code, retry_count=conf.config.DEFAULT_RETRY_COUNT, raise_exception = True):
-    url = f'https://{conf.util.decode_prop(conf.config.G_PROPERTIES.get("ghost"))}/v1/api/stocks_data/v1/tr_live_prices/exchange/{stock_exchange}/segment/CASH/{quote(stock_code)}/latest'
+def get_live_price(exchange, code, retry_count=conf.config.DEFAULT_RETRY_COUNT, raise_exception = True):
+    url = f'https://{conf.config.G_PROPERTIES.get("ghost")}/v1/api/stocks_data/v1/tr_live_prices/exchange/{exchange}/segment/CASH/{quote(code)}/latest'
     live_price_data = call(url, 'GET', None, None, retry_count, raise_exception)
     return live_price_data
 
-####################################################################
+######################## RETURNS STK CHART CANDLES #########################
 
-def get_stock_chart_data(stock_exchange, stock_code, interval_min=1, fetch_freq='daily', retry_count=conf.config.DEFAULT_RETRY_COUNT, raise_exception=True):
-    url = f'https://{conf.util.decode_prop(conf.config.G_PROPERTIES.get("ghost"))}/v1/api/charting_service/v2/chart/exchange/{stock_exchange}/segment/CASH/{quote(stock_code)}/{fetch_freq}?intervalInMinutes={interval_min}&minimal=true'
+def get_stk_chart_data(exchange, code, interval_min=1, fetch_freq='daily', retry_count=conf.config.DEFAULT_RETRY_COUNT, raise_exception=True):
+    url = f'https://{conf.config.G_PROPERTIES.get("ghost")}/v1/api/charting_service/v2/chart/exchange/{exchange}/segment/CASH/{quote(code)}/{fetch_freq}?intervalInMinutes={interval_min}&minimal=true'
     stock_chart_data = call(url, 'GET', None, None, retry_count, raise_exception)
     return stock_chart_data
 
-####################################################################
+####################### GET STK BY SEARCH ID ###############################
 
-def get_stock_by_search_id(search_id, retry_count=conf.config.DEFAULT_RETRY_COUNT, raise_exception = True):
-    url = f'https://{conf.util.decode_prop(conf.config.G_PROPERTIES.get("ghost"))}/v1/api/stocks_data/v1/company/search_id/{search_id}?page=0&size=10'
+def get_stk_by_search_id(search_id, retry_count=conf.config.DEFAULT_RETRY_COUNT, raise_exception = True):
+    url = f'https://{conf.config.G_PROPERTIES.get("ghost")}/v1/api/stocks_data/v1/company/search_id/{search_id}?page=0&size=10'
     stock_data = call(url, 'GET', None, None, retry_count, raise_exception)
     return stock_data
 
-####################################################################
+######################## LIST ALL STKS API #################################
 
-def get_all_stocks_data(page = 0, size = 25, sort_type = 'ASC', sort_by = 'NA', stock_indices = [], stock_industry = [], retry_count = conf.config.DEFAULT_RETRY_COUNT, raise_exception = True): 
+def get_all_stks_data(page = 0, size = 25, sort_type = 'ASC', sort_by = 'NA', stock_indices = [], stock_industry = [], retry_count = conf.config.DEFAULT_RETRY_COUNT, raise_exception = True): 
     
     get_all_stocks_req = {}
     get_all_stocks_req['listFilters'] = {}
@@ -68,20 +69,20 @@ def get_all_stocks_data(page = 0, size = 25, sort_type = 'ASC', sort_by = 'NA', 
     get_all_stocks_req['listFilters']['INDEX'] = stock_indices
     get_all_stocks_req['listFilters']['INDUSTRY'] = stock_industry
 
-    url = f'https://{conf.util.decode_prop(conf.config.G_PROPERTIES.get("ghost"))}/v1/api/stocks_data/v1/all_stocks'
+    url = f'https://{conf.config.G_PROPERTIES.get("ghost")}/v1/api/stocks_data/v1/all_stocks'
 
     paginated_stocks = call(url, 'POST', None, get_all_stocks_req, retry_count, raise_exception)
 
     return paginated_stocks
 
-####################################################################
+######################### LIST CURRENT HOLDING STKS #########################
 
-def get_current_holding_stocks(retry_count=conf.config.DEFAULT_RETRY_COUNT, raise_exception=True):
-    url = f'https://{conf.util.decode_prop(conf.config.G_PROPERTIES.get("ghost"))}/v1/api/stocks_router/v6/dashboard?ts={datetime.datetime.now()}&source=other'
+def get_current_holding_stks(retry_count=conf.config.DEFAULT_RETRY_COUNT, raise_exception=True):
+    url = f'https://{conf.config.G_PROPERTIES.get("ghost")}/v1/api/stocks_router/v6/dashboard?ts={datetime.datetime.now()}&source=other'
     req_headers = get_auth_headers()
     current_holding_response = call(url, 'GET', req_headers, None, retry_count, raise_exception)
     return current_holding_response
 
-####################################################################
+#############################################################################
 
 

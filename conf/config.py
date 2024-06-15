@@ -2,7 +2,7 @@
 import datetime
 
 G_PROPERTIES = {
-    'ghost': '=4Wauc3dvJ3Z',
+    'ghost': '',
     'ubt': '',
     'uct': ''
 }
@@ -20,5 +20,14 @@ DEFAULT_BATCH_SIZE              = 25
 DEFAULT_RETRY_COUNT             = 3
 
 
+DB_USER_NAME                    = 'root'
+DB_PASSWORD                     = None
+DB_HOST                         = '127.0.0.1'
+DB_PORT                         = 3306
+DATABASE                        = ''
 
+################## CREATE A NEW config_local.py IN THE SAME PYTHON PACKAGE #########
+################## ADD OVERRIDING PROPERTIES IN FOLLOWING MODULE ###################
+
+from conf.config_local import *
 

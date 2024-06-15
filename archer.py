@@ -1,10 +1,10 @@
-import datetime, json, time
+import datetime, json, time, pytz
 from conf.util import decode_prop
 from utils.utility import clear_line, trigger_notification
 from gapis.apis import *
 
 
-GHOST = conf.util.decode_prop(conf.config.G_PROPERTIES.get('ghost'))
+GHOST = conf.config.G_PROPERTIES.get('ghost')
 
 
 def get_probe_data_list():
@@ -23,12 +23,12 @@ def shoot(targeted_stks):
 
             if(live_data.get('ltp')>stk.get('sellBoundary') and stk.get('sellBoundaryNotificationEnabled') and datetime.datetime.now()>(stk.get('lastNotifiedTimestamp')+conf.config.NOTIFICATION_TIME_DELTA)):
                 print(f'https://{GHOST}/stocks/{stk.get("searchId")}')
-                trigger_notification(stk.get('symbol'), live_data.get('ltp'))
+                trigger_notification(stk.get('symbol'), f'{datetime.datetime.now(tz=pytz.timezone("Asia/Kolkata"))}:: {stk.get("symbol")} {live_data.get("ltp")}')
                 stk.update({ 'lastNotifiedTimestamp': datetime.datetime.now() })
             
             elif(live_data.get('ltp')<stk.get('buyBoundary') and stk.get('buyBoundaryNotificationEnabled') and datetime.datetime.now()>(stk.get('lastNotifiedTimestamp')+conf.config.NOTIFICATION_TIME_DELTA)):
                 print(f'https://{GHOST}/stocks/{stk.get("searchId")}')
-                trigger_notification(stk.get('symbol'), live_data.get('ltp'))
+                trigger_notification(stk.get('symbol'), f'{datetime.datetime.now(tz=pytz.timezone("Asia/Kolkata"))}:: {stk.get("symbol")} {live_data.get("ltp")}')
                 stk.update({ 'lastNotifiedTimestamp': datetime.datetime.now() })
         
         print('sleeping...')

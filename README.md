@@ -59,7 +59,7 @@ CREATE TABLE `gst_details` (
   ```
   # To run archer script that keeps probing server and notifies upon crossing thresholds
 
-  python3 prober/archer.py
+  python3 archer.py
   ```
 
 
