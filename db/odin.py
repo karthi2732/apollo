@@ -142,6 +142,14 @@ def get_stk_cnt():
     CURSOR.execute(select_query)
     for record in CURSOR:
         return record[0]
+    
+################# GET TRADABILITY OF STK ############################
+
+def is_stk_tradable(search_id):
+    select_query = f'SELECT tradable FROM gst_details WHERE search_id=\'{search_id}\''
+    CURSOR.execute(select_query)
+    for record in CURSOR:
+        return record[0]
 
 ####################################################################
 
