@@ -47,6 +47,8 @@ def get_live_price(exchange, code, retry_count=conf.config.DEFAULT_RETRY_COUNT, 
 def get_stk_chart_data(exchange, code, interval_min=1, fetch_freq='daily', retry_count=conf.config.DEFAULT_RETRY_COUNT, raise_exception=True):
     url = f'https://{conf.config.G_PROPERTIES.get("ghost")}/v1/api/charting_service/v2/chart/exchange/{exchange}/segment/CASH/{quote(code)}/{fetch_freq}?intervalInMinutes={interval_min}&minimal=true'
     stock_chart_data = call(url, 'GET', None, None, retry_count, raise_exception)
+    stock_chart_data['exchange'] = exchange
+    stock_chart_data['code'] = code
     return stock_chart_data
 
 ####################### GET STK BY SEARCH ID ###############################
