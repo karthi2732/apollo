@@ -121,6 +121,9 @@ def get_stk_details(search_id_list):
         stock_detail['search_id'] = record[0]
         stock_detail['exchange'] = record[1]
         stock_detail['code'] = record[2]
+        stock_detail['tradable'] = record[3]
+        stock_detail['g_contract_id'] = record[4]
+        stock_detail['isin'] = record[5]
         stock_details.append(stock_detail)
     return stock_details
 
