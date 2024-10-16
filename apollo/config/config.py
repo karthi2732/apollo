@@ -1,12 +1,6 @@
 
 import datetime
 
-G_PROPERTIES = {
-    'ghost': '',
-    'ubt': '',
-    'uct': ''
-}
-
 NOTIFICATION_ENABLED            = True
 NOTIFICATION_INTERVAL_SECONDS   = 5
 NOTIFICATION_TIME_DELTA         = datetime.timedelta(seconds=NOTIFICATION_INTERVAL_SECONDS)
@@ -16,18 +10,24 @@ PROBE_FREQUENCY_IN_SECONDS      = 5
 RETRY_FREQUENCY_IN_SECONDS      = 5
 
 DEFAULT_ITERATION_LIMIT         = 500
-DEFAULT_BATCH_SIZE              = 25
+DEFAULT_API_PAGE_SIZE           = 25
+DEFAULT_DB_BATCH_SIZE           = 25
 DEFAULT_RETRY_COUNT             = 3
 
 
 DB_USER_NAME                    = 'root'
-DB_PASSWORD                     = None
+DB_PASSWORD                     = ''
 DB_HOST                         = '127.0.0.1'
-DB_PORT                         = 3306
-DATABASE                        = ''
+DB_PORT                         = '3306'
+DB_NAME                         = 'apollo'
 
-################## CREATE A NEW config_local.py IN THE SAME PYTHON PACKAGE #########
-################## ADD OVERRIDING PROPERTIES IN FOLLOWING MODULE ###################
+"""
+Overriding Configs for above mentioned Configs are specified in `overrides.py`
 
-from conf.config_local import *
+"""
+from .overrides import *
+
+
+DB_URL          = f'mysql+mysqlconnector://{DB_USER_NAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4'
+
 
