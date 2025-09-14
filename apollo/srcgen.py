@@ -65,16 +65,16 @@ def reset_tradability(stks):
 
         stk_week_candle_response = stk_week_chart_responses[i].result()
         
-        if(stk_week_candle_response is None):
+        tradable = False
+        if(stk_week_candle_response is None or stk_week_candle_response.get('candles') is None):
             print(f'Week Chart Not Found {stks[i].search_id}')
-            continue
+        else:
+            stk_week_candle = stk_week_candle_response.get('candles')
+            
+            tradable = (len(stk_week_candle)>=300 and longest_unchanged_price_subset_length(stk_week_candle)<24)
 
-        stk_week_candle = stk_week_candle_response.get('candles')
-        
-        tradable = (len(stk_week_candle)>=300 and longest_unchanged_price_subset_length(stk_week_candle)<24)
-
-        if(stks[i].tradable is True and tradable is False):
-            print(f'Tradable exhibited Non Tradable property {stks[i].search_id}')
+            if(stks[i].tradable is True and tradable is False):
+                print(f'Tradable exhibited Non Tradable property {stks[i].search_id}')
         
         stks[i].tradable = tradable
     

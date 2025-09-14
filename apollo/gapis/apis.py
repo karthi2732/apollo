@@ -90,13 +90,19 @@ Iterates the pages and lists the stks
 def get_gstk_page(page = 0, size = 25, sort_type = 'ASC', sort_by = 'NA', stock_indices = [], stock_industry = [], retry_count = DEFAULT_RETRY_COUNT, raise_exception = True): 
     
     get_all_stocks_req = {}
+
     get_all_stocks_req['listFilters'] = {}
+    get_all_stocks_req['listFilters']['INDEX'] = stock_indices
+    get_all_stocks_req['listFilters']['INDUSTRY'] = stock_industry
+
+    get_all_stocks_req['objFilters'] = {}
+    get_all_stocks_req['objFilters']['CLOSE_PRICE'] = { "max":1000000,"min":0 }
+    get_all_stocks_req['objFilters']['MARKET_CAP'] = { "max":3000000000000000,"min":0 }
+    
     get_all_stocks_req['page'] = page
     get_all_stocks_req['size'] = size
     get_all_stocks_req['sortType'] = sort_type
     get_all_stocks_req['sortBy'] = sort_by
-    get_all_stocks_req['listFilters']['INDEX'] = stock_indices
-    get_all_stocks_req['listFilters']['INDUSTRY'] = stock_industry
 
     url = f'https://{G_HOST}/v1/api/stocks_data/v1/all_stocks'
 
