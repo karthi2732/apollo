@@ -24,8 +24,8 @@ CREATE TABLE `gstk_day_stat` (
   `live_price` DECIMAL(11,2) DEFAULT 0,
   `day_change` DECIMAL(11,3) DEFAULT 0,
   `day_change_perc` DECIMAL(11,2) DEFAULT 0,
-  PRIMARY KEY (`search_id`),
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`search_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
   - Use the following commands to setup env for the scripts
